@@ -3,9 +3,9 @@ import uuid
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_security.utils import hash_password, verify_password
 
-import user.layer_models as layer_models
-import user.payload_models as payload_models
-import user.repositories as repo
+import services.user.layer_models as layer_models
+import services.user.payload_models as payload_models
+import services.user.repositories as repo
 import utils.exceptions as exc
 import utils.types as types
 from api.v1.utils import Pagination

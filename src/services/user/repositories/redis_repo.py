@@ -3,7 +3,7 @@ import typing
 from contextlib import contextmanager
 
 from db.redis import redis
-from user.repositories.protocol import TMStorageTransaction, UserTmStorageRepositoryProtocol
+from services.user.repositories.protocol import TMStorageTransaction, UserTmStorageRepositoryProtocol
 
 
 class UserTmStorageRepository(UserTmStorageRepositoryProtocol):

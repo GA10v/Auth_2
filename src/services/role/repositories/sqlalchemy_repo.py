@@ -2,9 +2,9 @@ import uuid
 
 import sqlalchemy.exc as sqlalch_exc
 
-import role.layer_models as layer_models
-import role.payload_models as payload_models
-import role.repositories.protocol as protocol
+import services.role.layer_models as layer_models
+import services.role.payload_models as payload_models
+import services.role.repositories.protocol as protocol
 import utils.exceptions as exc
 from db import session_scope
 from models.permissions import Permission, RolePermission

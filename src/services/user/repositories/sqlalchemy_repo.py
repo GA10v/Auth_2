@@ -3,9 +3,9 @@ from dataclasses import asdict
 
 import sqlalchemy.exc as sqlalch_exc
 
-import user.layer_models as layer_models
-import user.payload_models as payload_models
-import user.repositories.protocol as protocol
+import services.user.layer_models as layer_models
+import services.user.payload_models as payload_models
+import services.user.repositories.protocol as protocol
 import utils.exceptions as exc
 from api.v1.utils import Pagination
 from db import session_scope

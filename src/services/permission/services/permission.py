@@ -1,8 +1,8 @@
 import uuid
 
-import permission.layer_models as layer_models
-import permission.payload_models as payload_models
-import permission.repositories as repo
+import services.permission.layer_models as layer_models
+import services.permission.payload_models as payload_models
+import services.permission.repositories as repo
 import utils.exceptions as exc
 from core.logger import get_logger
 

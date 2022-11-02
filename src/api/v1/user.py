@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from core.config import settings
-from user.payload_models import (
+from services.user.payload_models import (
     ChangePasswordPayload,
     LogoutPayload,
     RefreshTokensPayload,
@@ -12,7 +12,7 @@ from user.payload_models import (
     UserID,
     UserLoginPayload,
 )
-from user.services.user_auth import UserService
+from services.user.services.user_auth import UserService
 from utils.exceptions import EmailAlreadyExist, InvalidPassword, NoAccessError, NotFoundError, UniqueConstraintError
 
 from .components.role_schemas import Role as RoleSchem

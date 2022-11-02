@@ -4,8 +4,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
 from core.config import settings
-from permission.payload_models import PermissionCreate, PermissionUpdate
-from permission.services.permission import PermissionService
+from services.permission.payload_models import PermissionCreate, PermissionUpdate
+from services.permission.services.permission import PermissionService
 from utils.exceptions import AttemptDeleteProtectedObjectError, NotFoundError, UniqueConstraintError
 
 from .components.perm_schemas import Permission as PermissionSchem
