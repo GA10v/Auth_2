@@ -4,8 +4,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
 from core.config import settings
-from role.payload_models import RoleCreate, RoleUpdate
-from role.services.role import RoleService
+from services.role.payload_models import RoleCreate, RoleUpdate
+from services.role.services.role import RoleService
 from utils.exceptions import AttemptDeleteProtectedObjectError, NotFoundError, UniqueConstraintError
 
 from .components.perm_schemas import Permission as PermissionSchem

@@ -1,8 +1,8 @@
 import typing
 import uuid
 
-import permission.layer_models as layer_models
-import permission.payload_models as payload_models
+import services.permission.layer_models as layer_models
+import services.permission.payload_models as payload_models
 
 
 class PermissionRepositoryProtocol(typing.Protocol):

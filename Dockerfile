@@ -19,5 +19,5 @@ COPY pyproject.toml pyproject.toml
 RUN poetry config virtualenvs.create false && \
     poetry install $(test "$PROJECT_ENV" = production && echo "--no-dev") --no-interaction --no-ansi
 
-COPY src/ ./src
+COPY auth/ ./src
 COPY .flake8 .flake8

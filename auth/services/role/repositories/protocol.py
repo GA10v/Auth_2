@@ -1,8 +1,8 @@
 import typing
 import uuid
 
-import role.layer_models as layer_models
-import role.payload_models as payload_models
+import services.role.layer_models as layer_models
+import services.role.payload_models as payload_models
 
 
 class RoleRepositoryProtocol(typing.Protocol):

@@ -1,8 +1,8 @@
 import uuid
 
-import role.layer_models as layer_models
-import role.payload_models as payload_models
-import role.repositories as repo
+import services.role.layer_models as layer_models
+import services.role.payload_models as payload_models
+import services.role.repositories as repo
 import utils.exceptions as exc
 from core.logger import get_logger
 
