@@ -14,7 +14,7 @@
     ```$ flask create_sudo create_tables```
 7. Проект запускается командой
     ```$ python3 src/wsgi.py```
-8. Перейти к документации по url: ```http://localhost:5000/swagger/ ```
+8. Перейти к документации по url: ```http://localhost:80/swagger/ ```
 
 ### Запуск приложения в docker
 1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
