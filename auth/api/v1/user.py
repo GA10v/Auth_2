@@ -83,7 +83,7 @@ def login():
         'user_agent': request.headers.get('User-Agent'),
     }
     try:
-        access_token, refresh_token = service.login(UserLoginPayload(**_request))
+        access_token, refresh_token, user_id = service.login(UserLoginPayload(**_request))
     except NotFoundError:
         return jsonify(message='User is not exist'), HTTPStatus.UNAUTHORIZED
     except InvalidPassword:
@@ -94,6 +94,7 @@ def login():
         tokens={
             'access_token': access_token,
             'refresh_token': refresh_token,
+            'user_id': user_id
         },
     )
     return response, HTTPStatus.OK

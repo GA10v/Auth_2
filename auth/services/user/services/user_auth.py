@@ -81,7 +81,7 @@ class UserService:
             refresh_token,
             ex=settings.jwt.REFRESH_TOKEN_EXP,
         )
-        return access_token, refresh_token
+        return access_token, refresh_token, user.id
 
     def change_password(self, passwords: payload_models.ChangePasswordPayload) -> None:
         """
