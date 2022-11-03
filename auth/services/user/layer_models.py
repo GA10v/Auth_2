@@ -38,3 +38,9 @@ class Permission(DefaultModel):
 class Role(DefaultModel):
     name: str
     description: str
+
+
+class SocialAccount(DefaultModel):
+    user_id: uuid.UUID
+    social_name: str
+    social_id: str

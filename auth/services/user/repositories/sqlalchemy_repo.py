@@ -1,15 +1,14 @@
 import uuid
 from dataclasses import asdict
 
-import sqlalchemy.exc as sqlalch_exc
-
 import services.user.layer_models as layer_models
 import services.user.payload_models as payload_models
 import services.user.repositories.protocol as protocol
+import sqlalchemy.exc as sqlalch_exc
 import utils.exceptions as exc
 from api.v1.utils import Pagination
 from db import session_scope
-from models import AllowedDevice, Permission, Role, RolePermission, RoleUser, Session, User
+from models import AllowedDevice, Permission, Role, RolePermission, RoleUser, Session, SocialAccount, User
 
 DEFAULT_USER_ROLE = 'User'
 
@@ -139,3 +138,22 @@ class UserSqlalchemyRepository(protocol.UserRepositoryProtocol):
             raise exc.NotFoundError
         with session_scope():
             role_user.update({'is_deleted': True})
+
+    def create_social_account(self, social_account: payload_models.SocialAccountPayload) -> layer_models.SocialAccount:
+        _social_account = SocialAccount(**social_account.dict())
+        try:
+            with session_scope() as session:
+                session.add(_social_account)
+                session.flush()
+                return layer_models.SocialAccount.from_orm(_social_account)
+        except sqlalch_exc.IntegrityError as ex:
+            raise exc.UniqueConstraintError from ex
+
+    def get_social_account(self, social_id: str, social_name: str) -> layer_models.SocialAccount:
+        _social_account = SocialAccount.query.filter(
+            SocialAccount.social_id == social_id,
+            SocialAccount.social_name == social_name,
+        ).first()
+        if _social_account is None:
+            raise exc.NotFoundError
+        return layer_models.SocialAccount.from_orm(_social_account)
