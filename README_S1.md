@@ -13,7 +13,7 @@
 6. Заполнить БД данными командой
     ```$ flask create_sudo create_tables```
 7. Проект запускается командой
-    ```$ python3 src/wsgi.py```
+    ```$ python3 auth/wsgi.py```
 8. Перейти к документации по url: ```http://localhost:80/swagger/ ```
 
 ### Запуск приложения в docker
