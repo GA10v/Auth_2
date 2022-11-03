@@ -13,13 +13,14 @@
 6. Заполнить БД данными командой
     ```$ flask create_sudo create_tables```
 7. Проект запускается командой
-    ```$ python3 src/wsgi.py```
-8. Перейти к документации по url: ```http://localhost:80/swagger/ ```
+    ```$ python3 auth/wsgi.py```
+8. Перейти к документации по url: ```http://localhost:5000/swagger/ ```
 
 ### Запуск приложения в docker
 1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
 2. Запустить контейнер командой
     ```$ docker-compose -f docker-compose.prod.yml up -d --build```
+3. Перейти к документации по url: ```http://localhost:80/swagger/ ```
 
 ### Запуск тестов
 1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
