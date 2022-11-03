@@ -46,3 +46,8 @@ class UserDevicePayload(UserID):
 
 class SessionPayload(UserID):
     device_id: uuid.UUID
+
+
+class SocialAccountPayload(UserID):
+    social_id: str
+    social_name: str
