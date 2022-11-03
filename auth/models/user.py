@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from flask_security import UserMixin
-from sqlalchemy.dialects.postgresql import UUID
-
 from db import db
+from flask_security import UserMixin
 from models.utils import BaseModel
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class User(BaseModel, UserMixin):
@@ -28,3 +27,7 @@ class UserInfo(BaseModel):
 
     def __repr__(self) -> str:
         return f'Login: {self.id} {self.date}'
+
+
+class SocialAccount(BaseModel):
+    ...
