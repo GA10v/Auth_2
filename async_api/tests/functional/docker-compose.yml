@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  fastapi:
+    build:
+      context: ../../.
+      args:
+        PROJECT_ENV: dev
+    image: fastapi-image
+    env_file:
+      - ../../.env
+    depends_on:
+      - elastic
+      - redis
+    ports:
+      - "8000:8000"
+    restart: always
+
+  tests:
+    image: fastapi-image
+    entrypoint: >
+      sh -c "python3 tests/functional/utils/wait_for_redis.py
+      && python3 tests/functional/utils/wait_for_es.py
+      && pytest tests/functional/src"
+    env_file:
+      - .env
+    depends_on:
+      - fastapi
+
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
+    environment:
+      - 'xpack.security.enabled=false'
+      - 'discovery.type=single-node'
+    ports:
+      - "9200:9200"
+    restart: always
+
+  redis:
+    image: redis:7.0.4-alpine
+    ports:
+      - "6379:6379"
+    restart: always
