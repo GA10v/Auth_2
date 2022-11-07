@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
 from core.config import settings
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from services.user.payload_models import OAuthPayload
 from services.user.services.oauth import OAuthRegister
+from utils.exceptions import EmailAlreadyExist, NoAccessError, UniqueConstraintError
 
 oauth_blueprint = Blueprint('oauth', __name__, url_prefix='/api/v1/oauth')
 
@@ -50,4 +52,17 @@ def oauth_register_callback(provider):
      tags:
        - OAuth
     """
-    ...
+    oauth = OAuthRegister.get_provider(provider)
+    try:
+        user_social_data = oauth.callback()
+    except NoAccessError:
+        return jsonify(message='Authentication failed.'), HTTPStatus.FORBIDDEN
+    try:
+        user_data = OAuthPayload(user_agent=request.headers.get('User-Agent'), **user_social_data.dict())
+        oauth.register(user_data)
+    except EmailAlreadyExist:
+        return jsonify(message='Email is already in use'), HTTPStatus.CONFLICT
+    except UniqueConstraintError:
+        return jsonify(message='Social account is already linked'), HTTPStatus.CONFLICT
+
+    return jsonify(message='New user was registered'), HTTPStatus.OK
