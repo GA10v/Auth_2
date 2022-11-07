@@ -1,3 +1,4 @@
+import services.user.layer_models as layer_models
 from core.config import settings
 
 
@@ -20,7 +21,7 @@ class OAuthBase:
         """
         ...
 
-    def callback(self):
+    def callback(self) -> layer_models.OAuth:
         """
         Получить данные пользователя от провайдера.
 
