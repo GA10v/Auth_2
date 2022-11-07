@@ -1,4 +1,7 @@
-from flask import Blueprint
+from http import HTTPStatus
+
+from core.config import settings
+from flask import Blueprint, jsonify
 from services.user.services.oauth import OAuthRegister
 
 oauth_blueprint = Blueprint('oauth', __name__, url_prefix='/api/v1/oauth')
@@ -24,6 +27,8 @@ def oauth_register(provider):
      tags:
        - OAuth
     """
+    if not settings.oauth.providers.check_value(provider):
+        return jsonify(message='Unsupportable provider'), HTTPStatus.NOT_FOUND
     oauth = OAuthRegister.get_provider(provider)
     return oauth.authorize()
 

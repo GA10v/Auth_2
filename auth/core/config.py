@@ -92,7 +92,17 @@ class PermissionSettings(Enum):
     Moderator = 3
 
 
+class OAuthProviders(Enum):
+    yandex: str = 'yandex'
+    google: str = 'google'
+
+    @classmethod
+    def check_value(cls, value):
+        return value in cls._value2member_map_
+
+
 class OAuthSettings(BaseConfig):
+    providers: OAuthProviders = OAuthProviders
     credentials: dict = {
         'yandex': {
             'name': 'yandex',
