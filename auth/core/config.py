@@ -106,11 +106,14 @@ class OAuthSettings(BaseConfig):
     credentials: dict = {
         'yandex': {
             'name': 'yandex',
-            'id': '...',
-            'secret': '...',
-            'authorize_url': '...',
-            'access_token_url': '...',
-            'base_url': '...',
+            'id': '93bfa237f2c9460eb1f6b7b027fd335c',
+            'secret': '767fb1eb31c9438796e112bc3ab16455',
+            'authorize_url': 'https://oauth.yandex.ru/authorize',
+            # https://yandex.ru/dev/id/doc/dg/oauth/reference/web-client.html
+            'access_token_url': 'https://oauth.yandex.ru/token',
+            # https://yandex.ru/dev/id/doc/dg/oauth/reference/auto-code-client.html#auto-code-client__get-token
+            'base_url': 'https://login.yandex.ru/info',
+            # https://yandex.ru/dev/id/doc/dg/api-id/reference/request.html
         },
         'google': {
             'name': 'google',
