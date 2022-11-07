@@ -1,16 +1,29 @@
 import json
+import secrets
+from string import ascii_letters, digits
 
 import services.user.layer_models as layer_models
+import services.user.payload_models as payload_models
+import services.user.repositories as repo
 import utils.exceptions as exc
 from core.config import settings
+from core.logger import get_logger
 from flask import redirect, request, url_for
+from flask_security.utils import hash_password
 from rauth import OAuth2Service
+
+logger = get_logger(__name__)
+db_repo = repo.get_user_db_repo()
 
 
 class OAuthBase:
     providers = None
 
-    def __init__(self, provider_name: str):
+    def __init__(
+        self,
+        provider_name: str,
+        db_repository: repo.UserRepositoryProtocol = db_repo,
+    ):
         self.provider_name = provider_name
         credentials = settings.oauth.credentials.get(provider_name)
         self.consumer_name = credentials.get('name')
@@ -19,6 +32,7 @@ class OAuthBase:
         self.authorize_url = credentials.get('authorize_url')
         self.access_token_url = credentials.get('access_token_url')
         self.base_url = credentials.get('base_url')
+        self.db_repo = db_repository
 
     @classmethod
     def get_provider(cls, provider_name: str):
@@ -49,6 +63,41 @@ class OAuthBase:
 class OAuthRegister(OAuthBase):
     def get_callback_url(self):
         return url_for('oauth.oauth_register_callback', provider=self.provider_name, _external=True)
+
+    @staticmethod
+    def _generate_password():
+        symbols = ascii_letters + digits + '@$!%*#?&'
+        return ''.join(secrets.choice(symbols) for _ in range(16))
+
+    def register(self, user: payload_models.OAuthPayload) -> None:
+        """
+        Создание пользователя через OAuth.
+
+        :param user: данные нового пользователя
+        :raises EmailAlreadyExist: если email уже сущетсвует
+        :raises UniqueConstraintError: если social_id и username существует
+        """
+        password = self._generate_password()
+        _new_user = payload_models.UserCreatePayload(
+            username=user.username,
+            email=user.email,
+            password=hash_password(password),
+        )
+        try:
+            new_user = self.db_repo.create(_new_user)
+        except exc.UniqueConstraintError as ex:
+            logger.info('Ошибка при регистрации пользователя через OAuth: \n %s', str(ex))
+            raise exc.EmailAlreadyExist from ex
+        _social_account = payload_models.SocialAccountPayload(
+            user_id=new_user.id,
+            social_id=user.social_id,
+            social_name=self.provider_name,
+        )
+        try:
+            self.db_repo.create_social_account(_social_account)
+        except exc.UniqueConstraintError as ex:
+            logger.info('Ошибка при создании social_account через OAuth: \n %s', str(ex))
+            raise
 
 
 class YandexRegister(OAuthRegister):
