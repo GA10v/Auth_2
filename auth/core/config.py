@@ -3,9 +3,8 @@ from enum import Enum
 from logging import config as logging_config
 from pathlib import Path
 
-from pydantic import BaseSettings
-
 from core.logger import LOGGING
+from pydantic import BaseSettings
 
 logging_config.dictConfig(LOGGING)
 
@@ -93,6 +92,27 @@ class PermissionSettings(Enum):
     Moderator = 3
 
 
+class OAuthSettings(BaseConfig):
+    credentials: dict = {
+        'yandex': {
+            'name': 'yandex',
+            'id': '...',
+            'secret': '...',
+            'authorize_url': '...',
+            'access_token_url': '...',
+            'base_url': '...',
+        },
+        'google': {
+            'name': 'google',
+            'id': '...',
+            'secret': '...',
+            'authorize_url': '...',
+            'access_token_url': '...',
+            'base_url': '...',
+        },
+    }
+
+
 class ProjectSettings(BaseConfig):
     redis: RedisSettings = RedisSettings()
     postgres: PostgresSettings = PostgresSettings()
@@ -101,6 +121,7 @@ class ProjectSettings(BaseConfig):
     security: SecuritySettings = SecuritySettings()
     swagger: SwaggerSettings = SwaggerSettings()
     permission = PermissionSettings
+    oauth: OAuthSettings = OAuthSettings()
 
 
 settings = ProjectSettings()
