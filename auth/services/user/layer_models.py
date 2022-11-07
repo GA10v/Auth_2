@@ -44,3 +44,9 @@ class SocialAccount(DefaultModel):
     user_id: uuid.UUID
     social_name: str
     social_id: str
+
+
+class OAuth(BaseModel):
+    username: str
+    email: str
+    social_id: str

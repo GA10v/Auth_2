@@ -3,9 +3,8 @@ from enum import Enum
 from logging import config as logging_config
 from pathlib import Path
 
-from pydantic import BaseSettings
-
 from core.logger import LOGGING
+from pydantic import BaseSettings
 
 logging_config.dictConfig(LOGGING)
 
@@ -93,6 +92,40 @@ class PermissionSettings(Enum):
     Moderator = 3
 
 
+class OAuthProviders(Enum):
+    yandex: str = 'yandex'
+    google: str = 'google'
+
+    @classmethod
+    def check_value(cls, value):
+        return value in cls._value2member_map_
+
+
+class OAuthSettings(BaseConfig):
+    providers: OAuthProviders = OAuthProviders
+    credentials: dict = {
+        'yandex': {
+            'name': 'yandex',
+            'id': '93bfa237f2c9460eb1f6b7b027fd335c',
+            'secret': '767fb1eb31c9438796e112bc3ab16455',
+            'authorize_url': 'https://oauth.yandex.ru/authorize',
+            # https://yandex.ru/dev/id/doc/dg/oauth/reference/web-client.html
+            'access_token_url': 'https://oauth.yandex.ru/token',
+            # https://yandex.ru/dev/id/doc/dg/oauth/reference/auto-code-client.html#auto-code-client__get-token
+            'base_url': 'https://login.yandex.ru/info',
+            # https://yandex.ru/dev/id/doc/dg/api-id/reference/request.html
+        },
+        'google': {
+            'name': 'google',
+            'id': '...',
+            'secret': '...',
+            'authorize_url': '...',
+            'access_token_url': '...',
+            'base_url': '...',
+        },
+    }
+
+
 class ProjectSettings(BaseConfig):
     redis: RedisSettings = RedisSettings()
     postgres: PostgresSettings = PostgresSettings()
@@ -101,6 +134,7 @@ class ProjectSettings(BaseConfig):
     security: SecuritySettings = SecuritySettings()
     swagger: SwaggerSettings = SwaggerSettings()
     permission = PermissionSettings
+    oauth: OAuthSettings = OAuthSettings()
 
 
 settings = ProjectSettings()
