@@ -1,6 +1,9 @@
+import json
+
 import services.user.layer_models as layer_models
+import utils.exceptions as exc
 from core.config import settings
-from flask import redirect, url_for
+from flask import redirect, request, url_for
 from rauth import OAuth2Service
 
 
@@ -70,4 +73,25 @@ class YandexRegister(OAuthRegister):
         )
 
     def callback(self):
-        ...
+        def decode_json(payload):
+            return json.loads(payload.decode('utf-8'))
+
+        code = request.args.get('code', default=None)
+        if code is None:
+            raise exc.NoAccessError
+        oauth_session = self.service.get_auth_session(
+            method='POST',
+            data={
+                'grant_type': 'authorization_code',
+                'code': code,
+                'client_id': self.consumer_id,
+                'client_secret': self.consumer_secret,
+            },
+            decoder=decode_json,
+        )
+        user = oauth_session.get('', params={'format': 'json'}).json()
+        return layer_models.OAuth(
+            username=user['login'],
+            email=user['default_email'],
+            social_id=user['id'],
+        )
