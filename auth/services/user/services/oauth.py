@@ -1,6 +1,6 @@
 import services.user.layer_models as layer_models
 from core.config import settings
-from flask import url_for
+from flask import redirect, url_for
 from rauth import OAuth2Service
 
 
@@ -61,7 +61,13 @@ class YandexRegister(OAuthRegister):
         )
 
     def authorize(self):
-        ...
+        return redirect(
+            self.service.get_authorize_url(
+                scope='login:email login:info',
+                response_type='code',
+                redirect_uri=self.get_callback_url(),
+            ),
+        )
 
     def callback(self):
         ...
