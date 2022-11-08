@@ -715,6 +715,92 @@
                 ]
             }
         },
+        "/api/v1/oauth/register/{provider}": {
+            "post": {
+                "summary": "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u043d\u043e\u0432\u043e\u0433\u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0447\u0435\u0440\u0435\u0437 OAuth",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New user was registered"
+                    },
+                    "404": {
+                        "description": "Unsupportable provider"
+                    }
+                },
+                "tags": [
+                    "OAuth"
+                ]
+            }
+        },
+        "/api/v1/oauth/register-callback/{provider}": {
+            "get": {
+                "summary": "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u043d\u043e\u0432\u043e\u0433\u043e \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0447\u0435\u0440\u0435\u0437 OAuth.",
+                "responses": {
+                    "200": {
+                        "description": "Register successful"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "409": {
+                        "description": "Email is already in use or social account is already linked to another user"
+                    }
+                },
+                "tags": [
+                    "OAuth"
+                ]
+            }
+        },
+        "/api/v1/oauth/login/{provider}": {
+            "post": {
+                "summary": "\u0412\u0437\u043e\u0434 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0447\u0435\u0440\u0435\u0437 OAuth",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "404": {
+                        "description": "Unsupportable provider"
+                    }
+                },
+                "tags": [
+                    "OAuth"
+                ]
+            }
+        },
+        "/api/v1/oauth/login-callback/{provider}": {
+            "get": {
+                "summary": "\u0412\u0437\u043e\u0434 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f \u0447\u0435\u0440\u0435\u0437 OAuth.",
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "403": {
+                        "description": "Permission denied"
+                    },
+                    "409": {
+                        "description": "Email is already in use or social account is already linked to another user"
+                    }
+                },
+                "tags": [
+                    "OAuth"
+                ]
+            }
+        },
         "/logout": {},
         "/login": {}
     },
@@ -738,11 +824,11 @@
             "Register": {
                 "type": "object",
                 "properties": {
-                    "password": {
+                    "username": {
                         "type": "string",
-                        "description": "password",
+                        "description": "name",
                         "required": true,
-                        "example": "Test_12345"
+                        "example": "TestUser"
                     },
                     "email": {
                         "type": "string",
@@ -750,28 +836,28 @@
                         "required": true,
                         "example": "test_2@test.com"
                     },
-                    "username": {
+                    "password": {
                         "type": "string",
-                        "description": "name",
+                        "description": "password",
                         "required": true,
-                        "example": "TestUser"
+                        "example": "Test_12345"
                     }
                 }
             },
             "Login": {
                 "type": "object",
                 "properties": {
-                    "password": {
-                        "type": "string",
-                        "description": "password",
-                        "required": true,
-                        "example": "Test_12345"
-                    },
                     "email": {
                         "type": "string",
                         "description": "email",
                         "required": true,
                         "example": "test_2@test.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "password",
+                        "required": true,
+                        "example": "Test_12345"
                     }
                 }
             },
@@ -795,17 +881,17 @@
             "Tokens": {
                 "type": "object",
                 "properties": {
-                    "access_token": {
-                        "type": "string",
-                        "description": "access_token",
-                        "required": true,
-                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY2MzEyN....."
-                    },
                     "refresh_token": {
                         "type": "string",
                         "description": "refresh_token",
                         "required": true,
                         "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY2Mz......"
+                    },
+                    "access_token": {
+                        "type": "string",
+                        "description": "access_token",
+                        "required": true,
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY2MzEyN....."
                     }
                 }
             },
@@ -846,17 +932,17 @@
             "Permission": {
                 "type": "object",
                 "properties": {
-                    "description": {
-                        "type": "string",
-                        "description": "description",
-                        "required": true,
-                        "example": "\u041c\u043e\u0436\u0435\u0442 \u043f\u0440\u043e\u0441\u043c\u0430\u0442\u0440\u0438\u0432\u0430\u0442\u044c \u0441\u0432\u043e\u0439 \u043a\u043e\u043d\u0442\u0435\u043d\u0442"
-                    },
                     "code": {
                         "type": "integer",
                         "description": "code",
                         "required": true,
                         "example": 0
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "description",
+                        "required": true,
+                        "example": "\u041c\u043e\u0436\u0435\u0442 \u043f\u0440\u043e\u0441\u043c\u0430\u0442\u0440\u0438\u0432\u0430\u0442\u044c \u0441\u0432\u043e\u0439 \u043a\u043e\u043d\u0442\u0435\u043d\u0442"
                     },
                     "name": {
                         "type": "string",

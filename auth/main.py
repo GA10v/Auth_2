@@ -1,22 +1,22 @@
 import json
 from pathlib import Path
 
+from api.v1.components.perm_schemas import Permission
+from api.v1.components.role_schemas import Role
+from api.v1.components.user_schemas import ChangePassword, Login, Logout, RefreshToken, Register
+from api.v1.oauth import oauth_blueprint
+from api.v1.permission import permissions_blueprint
+from api.v1.role import role_blueprint
+from api.v1.user import auth_blueprint, user_blueprint
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
+from core.config import settings
+from db.db import init_db
 from flask import Flask, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_security import Security
 from flask_swagger_ui import get_swaggerui_blueprint
-
-from api.v1.components.perm_schemas import Permission
-from api.v1.components.role_schemas import Role
-from api.v1.components.user_schemas import ChangePassword, Login, Logout, RefreshToken, Register
-from api.v1.permission import permissions_blueprint
-from api.v1.role import role_blueprint
-from api.v1.user import auth_blueprint, user_blueprint
-from core.config import settings
-from db.db import init_db
 from utils.command import init_cli
 
 jwt = JWTManager()
@@ -35,6 +35,7 @@ def init_blueprint(app: Flask):
     app.register_blueprint(user_blueprint)
     app.register_blueprint(role_blueprint)
     app.register_blueprint(permissions_blueprint)
+    app.register_blueprint(oauth_blueprint)
 
 
 def init_jwt(app: Flask, config: object = settings.jwt) -> None:
