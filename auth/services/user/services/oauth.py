@@ -9,11 +9,13 @@ import utils.exceptions as exc
 from core.config import settings
 from core.logger import get_logger
 from flask import redirect, request, url_for
+from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_security.utils import hash_password
 from rauth import OAuth2Service
 
 logger = get_logger(__name__)
 db_repo = repo.get_user_db_repo()
+tms_repo = repo.get_user_tms_repo()
 
 
 class OAuthBase:
@@ -23,6 +25,7 @@ class OAuthBase:
         self,
         provider_name: str,
         db_repository: repo.UserRepositoryProtocol = db_repo,
+        tm_storage_repository: repo.UserTmStorageRepositoryProtocol = tms_repo,
     ):
         self.provider_name = provider_name
         credentials = settings.oauth.credentials.get(provider_name)
@@ -33,6 +36,7 @@ class OAuthBase:
         self.access_token_url = credentials.get('access_token_url')
         self.base_url = credentials.get('base_url')
         self.db_repo = db_repository
+        self.tms_repo = tm_storage_repository
 
     @classmethod
     def get_provider(cls, provider_name: str):
@@ -113,7 +117,51 @@ class OAuthLogin(OAuthBase):
         :return: кортеж из access, refresh токенов.
         :raises NotFoundError: если пользователя не существует
         """
-        ...
+        try:
+            _social_account = self.db_repo.get_social_account(social_id=user.social_id, social_name=self.provider_name)
+        except exc.NotFoundError as ex:
+            logger.info('Ошибка при попытке получить social_account через OAuth: \n %s', str(ex))
+            raise
+        try:
+            _user = self.db_repo.get_by_id(_social_account.user_id)
+        except exc.NotFoundError as ex:
+            logger.info('Ошибка при попытке получить пользователя через OAuth: \n %s', str(ex))
+            raise
+        _device = payload_models.UserDevicePayload(
+            user_id=_user.id,
+            user_agent=user.user_agent,
+        )
+        try:
+            user_device = self.db_repo.get_allowed_device(_device)
+        except exc.NotFoundError:
+            user_device = self.db_repo.add_allowed_device(_device)
+        self.db_repo.add_new_session(
+            session=payload_models.SessionPayload(
+                user_id=_user.id,
+                device_id=user_device.id,
+            ),
+        )
+        _permissions = self.db_repo.get_user_permissions(_user.id)
+        additional_claims = {
+            'permissions': [permission.code for permission in _permissions],
+            'is_super': _user.is_super,
+        }
+        access_token = create_access_token(
+            identity=_user.id,
+            additional_claims=additional_claims,
+            expires_delta=settings.jwt.ACCESS_TOKEN_EXP,
+        )
+        refresh_token = create_refresh_token(
+            identity=_user.id,
+            expires_delta=settings.jwt.REFRESH_TOKEN_EXP,
+        )
+        user_id = str(_user.id)
+        self.tms_repo.set(
+            user.user_agent + str(_user.id),
+            refresh_token,
+            ex=settings.jwt.REFRESH_TOKEN_EXP,
+        )
+        return access_token, refresh_token, user_id
 
 
 class YandexRegister(OAuthRegister):
