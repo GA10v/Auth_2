@@ -51,3 +51,10 @@ class SessionPayload(UserID):
 class SocialAccountPayload(UserID):
     social_id: str
     social_name: str
+
+
+class OAuthPayload(BaseModel):
+    user_agent: str
+    social_id: str
+    username: str
+    email: str
