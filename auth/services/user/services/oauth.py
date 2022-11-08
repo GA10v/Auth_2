@@ -100,6 +100,22 @@ class OAuthRegister(OAuthBase):
             raise
 
 
+class OAuthLogin(OAuthBase):
+    def get_callback_url(self):
+        return url_for('oauth.oauth_login_callback', provider=self.provider_name, _external=True)
+
+    def login(self, user: payload_models.OAuthPayload):
+        """
+
+        Возвращает access и refresh токены и user_id пользователя через OAuth.
+
+        :param user: данные пользователя для входа
+        :return: кортеж из access, refresh токенов.
+        :raises NotFoundError: если пользователя не существует
+        """
+        ...
+
+
 class YandexRegister(OAuthRegister):
     def __init__(self) -> None:
         super(YandexRegister, self).__init__('yandex')
