@@ -117,11 +117,11 @@ class OAuthSettings(BaseConfig):
         },
         'google': {
             'name': 'google',
-            'id': '...',
-            'secret': '...',
-            'authorize_url': '...',
-            'access_token_url': '...',
-            'base_url': '...',
+            'id': '158645861187-is4iskf819ia1bbjflu9jd144vfi2nt5.apps.googleusercontent.com',
+            'secret': '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',
+            'authorize_url': 'https://accounts.google.com/o/oauth2/auth',
+            'access_token_url': 'https://accounts.google.com/o/oauth2/token',
+            'base_url': 'https://www.googleapis.com/oauth2/v1/userinfo',
         },
     }
 
