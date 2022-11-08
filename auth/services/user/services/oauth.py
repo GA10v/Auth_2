@@ -208,3 +208,49 @@ class YandexRegister(OAuthRegister):
             email=user['default_email'],
             social_id=user['id'],
         )
+
+
+class YandexLogin(OAuthLogin):
+    def __init__(self) -> None:
+        super(YandexLogin, self).__init__('yandex')
+        self.service = OAuth2Service(
+            name=self.consumer_name,
+            client_id=self.consumer_id,
+            client_secret=self.consumer_secret,
+            authorize_url=self.authorize_url,
+            access_token_url=self.access_token_url,
+            base_url=self.base_url,
+        )
+
+    def authorize(self):
+        return redirect(
+            self.service.get_authorize_url(
+                scope='login:email login:info',
+                response_type='code',
+                redirect_uri=self.get_callback_url(),
+            ),
+        )
+
+    def callback(self):
+        def decode_json(payload):
+            return json.loads(payload.decode('utf-8'))
+
+        code = request.args.get('code', default=None)
+        if code is None:
+            raise exc.NoAccessError
+        oauth_session = self.service.get_auth_session(
+            method='POST',
+            data={
+                'grant_type': 'authorization_code',
+                'code': code,
+                'client_id': self.consumer_id,
+                'client_secret': self.consumer_secret,
+            },
+            decoder=decode_json,
+        )
+        user = oauth_session.get('', params={'format': 'json'}).json()
+        return layer_models.OAuth(
+            username=user['login'],
+            email=user['default_email'],
+            social_id=user['id'],
+        )
