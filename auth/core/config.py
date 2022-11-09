@@ -152,6 +152,7 @@ class ProjectSettings(BaseConfig):
     permission = PermissionSettings
     oauth: OAuthSettings = OAuthSettings()
     jaeger: JaegerSettings = JaegerSettings()
+    rate_limit: RateLimitSettings = RateLimitSettings()
 
 
 settings = ProjectSettings()
