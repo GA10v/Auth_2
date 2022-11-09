@@ -1,9 +1,8 @@
 from http import HTTPStatus
 
+from core.config import settings
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-
-from core.config import settings
 from services.user.payload_models import (
     ChangePasswordPayload,
     LogoutPayload,
@@ -17,7 +16,7 @@ from utils.exceptions import EmailAlreadyExist, InvalidPassword, NoAccessError, 
 
 from .components.role_schemas import Role as RoleSchem
 from .components.user_schemas import Session as SessionSchem
-from .utils import Pagination, check_permission
+from .utils import Pagination, check_permission, rate_limit
 
 auth_blueprint = Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 user_blueprint = Blueprint('user', __name__, url_prefix='/api/v1/user')
@@ -94,7 +93,7 @@ def login():
         tokens={
             'access_token': access_token,
             'refresh_token': refresh_token,
-            'user_id': user_id
+            'user_id': user_id,
         },
     )
     return response, HTTPStatus.OK
@@ -102,6 +101,7 @@ def login():
 
 @auth_blueprint.route('/change-password', methods=('PATCH',))
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.User)
 def change_password():
     """
@@ -149,6 +149,7 @@ def change_password():
 
 @auth_blueprint.route('/refresh-token', methods=('POST',))
 @jwt_required(refresh=True)
+@rate_limit()
 def refresh_token():
     """
     Обновление токенов.
@@ -189,6 +190,7 @@ def refresh_token():
 
 @auth_blueprint.route('/logout', methods=('POST',))
 @jwt_required()
+@rate_limit()
 def logout():
     """
     Выход пользователя из аккаунта.
@@ -223,6 +225,7 @@ def logout():
 
 
 @user_blueprint.route('/login-history/<uuid:user_id>', methods=('GET',))
+@rate_limit()
 @check_permission(permission=settings.permission.User)
 def login_history(user_id):
     """
@@ -284,6 +287,7 @@ def login_history(user_id):
     ),
 )
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def user_roles(user_id):  # noqa: C901
     """
