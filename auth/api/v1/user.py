@@ -190,7 +190,6 @@ def refresh_token():
 
 @auth_blueprint.route('/logout', methods=('POST',))
 @jwt_required()
-@rate_limit()
 def logout():
     """
     Выход пользователя из аккаунта.
@@ -225,8 +224,8 @@ def logout():
 
 
 @user_blueprint.route('/login-history/<uuid:user_id>', methods=('GET',))
-@rate_limit()
 @check_permission(permission=settings.permission.User)
+@rate_limit()
 def login_history(user_id):
     """
     Получить историю посещений.
