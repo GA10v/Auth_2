@@ -75,6 +75,13 @@ class JaegerSettings(BaseConfig):
         env_prefix = 'JAEGER_'
 
 
+class RateLimitSettings(BaseConfig):
+    PER_MINUTE: int = 20
+
+    class Config:
+        env_prefix = 'REQUEST_LIMIT_'
+
+
 class SwaggerSettings(BaseConfig):
     SPEC_TAGS: list = [
         {
