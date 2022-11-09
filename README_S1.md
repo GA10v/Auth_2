@@ -11,7 +11,7 @@
 5. Создать администратора командой
     ```$ flask create_sudo <username> <email> <password>```
 6. Заполнить БД данными командой
-    ```$ flask create_sudo create_tables```
+    ```$ flask create_tables```
 7. Проект запускается командой
     ```$ python3 auth/wsgi.py```
 8. Перейти к документации по url: ```http://localhost:5000/swagger/ ```
@@ -21,6 +21,7 @@
 2. Запустить контейнер командой
     ```$ docker-compose -f docker-compose.prod.yml up -d --build```
 3. Перейти к документации по url: ```http://localhost:80/swagger/ ```
+4. Перейти к Jaeger UI по url: ```http://localhost:16686/search ```
 
 ### Запуск тестов
 1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
