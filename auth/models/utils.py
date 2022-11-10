@@ -94,6 +94,6 @@ def create_sessions_partition_by_auth_date(target, connection, **kwargs) -> None
         FOR VALUES FROM ('2023-01-01') TO ('2023-12-31');""",
     )
     connection.execute(
-        """CREATE TABLE IF NOT EXISTS "sessions_2023" PARTITION OF "sessions"
+        """CREATE TABLE IF NOT EXISTS "sessions_2024" PARTITION OF "sessions"
         FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');""",
     )
