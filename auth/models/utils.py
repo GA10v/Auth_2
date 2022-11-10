@@ -81,4 +81,19 @@ def create_sessions_partition_by_auth_date(target, connection, **kwargs) -> None
     """
     Партицированные таблицы sessions по полю auth_date.
     """
-    ...
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2021" PARTITION OF "sessions"
+        FOR VALUES FROM ('2021-01-01') TO ('2022-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2022" PARTITION OF "sessions"
+        FOR VALUES FROM ('2022-01-01') TO ('2022-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2023" PARTITION OF "sessions"
+        FOR VALUES FROM ('2023-01-01') TO ('2023-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2023" PARTITION OF "sessions"
+        FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');""",
+    )
