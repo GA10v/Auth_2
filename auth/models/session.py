@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy.dialects.postgresql import UUID
-
 from db.db import db
-from models.utils import BaseModel
+from models.utils import BaseModel, create_sessions_partition_by_auth_date
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class AllowedDevice(BaseModel):
@@ -18,6 +17,13 @@ class AllowedDevice(BaseModel):
 
 class Session(BaseModel):
     __tablename__ = 'sessions'
+    __table_args__ = (
+        {
+            'schema': 'auth',
+            'postgresql_partition_by': 'RANGE (auth_date)',
+            'listeners': [('after_create', create_sessions_partition_by_auth_date)],
+        },
+    )
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('auth.users.id'), nullable=False)
     device_id = db.Column(UUID(as_uuid=True), db.ForeignKey('auth.allowed_device.id'), nullable=False)
     auth_date = db.Column(db.TIMESTAMP, default=datetime.now(), nullable=False)

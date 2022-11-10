@@ -1,12 +1,11 @@
 import uuid
 from datetime import datetime
 
+from db import db
 from flask_sqlalchemy import BaseQuery
 from psycopg2.errors import UniqueViolation
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.exc import IntegrityError, PendingRollbackError
-
-from db import db
 
 
 class QueryWithSoftDelete(BaseQuery):
@@ -49,3 +48,52 @@ class BaseModel(db.Model):
 
     def cond_delete(self):
         self.is_deleted = True
+
+
+def create_user_info_partition_by_country(target, connection, **kwargs) -> None:
+    """
+    Партицированные таблицы user_info по полю country.
+
+    cis('Azerbaijan', 'Armenia', 'Russia', 'Belarus', 'Kazakhstan', 'Kyrgyzstan')
+    eu('Austria', 'Belgium', 'Hungary', 'Greece', 'Denmark','France', 'Germany', 'Netherlands')
+    asia('China', 'Indonesia', 'Republic of Korea', 'Singapore', 'South Korea', 'Thailand', 'Japan')
+    na('Canada', 'Mexico', 'USA')
+    """
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "user_info_cis" PARTITION OF "user_info"
+        FOR VALUES IN ('Azerbaijan', 'Armenia', 'Russia', 'Belarus', 'Kazakhstan', 'Kyrgyzstan')""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "user_info_eu" PARTITION OF "user_info"
+        FOR VALUES IN ('Austria', 'Belgium', 'Hungary', 'Greece', 'Denmark','France', 'Germany', 'Netherlands')""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "user_info_asia" PARTITION OF "user_info"
+        FOR VALUES IN ('China', 'Indonesia', 'Republic of Korea', 'Singapore', 'South Korea', 'Thailand', 'Japan')""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "user_info_na" PARTITION OF "user_info"
+        FOR VALUES IN ('Canada', 'Mexico', 'USA')""",
+    )
+
+
+def create_sessions_partition_by_auth_date(target, connection, **kwargs) -> None:
+    """
+    Партицированные таблицы sessions по полю auth_date.
+    """
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2021" PARTITION OF "sessions"
+        FOR VALUES FROM ('2021-01-01') TO ('2022-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2022" PARTITION OF "sessions"
+        FOR VALUES FROM ('2022-01-01') TO ('2022-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2023" PARTITION OF "sessions"
+        FOR VALUES FROM ('2023-01-01') TO ('2023-12-31');""",
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "sessions_2024" PARTITION OF "sessions"
+        FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');""",
+    )

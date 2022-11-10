@@ -2,7 +2,7 @@ from datetime import datetime
 
 from db import db
 from flask_security import UserMixin
-from models.utils import BaseModel
+from models.utils import BaseModel, create_user_info_partition_by_country
 from sqlalchemy.dialects.postgresql import UUID
 
 
@@ -19,6 +19,14 @@ class User(BaseModel, UserMixin):
 
 class UserInfo(BaseModel):
     __tablename__ = 'user_info'
+    __table_args__ = (
+        db.UniqueConstraint('id', 'country'),
+        {
+            'schema': 'auth',
+            'postgresql_partition_by': 'LIST (country)',
+            'listeners': [('after_create', create_user_info_partition_by_country)],
+        },
+    )
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('auth.users.id'), nullable=False)
     full_name = db.Column(db.String, nullable=False)
     country = db.Column(db.String, nullable=False)
