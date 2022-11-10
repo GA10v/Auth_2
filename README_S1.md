@@ -11,7 +11,7 @@
 5. Создать администратора командой
     ```$ flask create_sudo <username> <email> <password>```
 6. Заполнить БД данными командой
-    ```$ flask create_sudo create_tables```
+    ```$ flask create_tables```
 7. Проект запускается командой
     ```$ python3 auth/wsgi.py```
 8. Перейти к документации по url: ```http://localhost:5000/swagger/ ```
