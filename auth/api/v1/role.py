@@ -1,16 +1,15 @@
 from http import HTTPStatus
 
+from core.config import settings
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-
-from core.config import settings
 from services.role.payload_models import RoleCreate, RoleUpdate
 from services.role.services.role import RoleService
 from utils.exceptions import AttemptDeleteProtectedObjectError, NotFoundError, UniqueConstraintError
 
 from .components.perm_schemas import Permission as PermissionSchem
 from .components.role_schemas import Role as RoleSchem
-from .utils import check_permission
+from .utils import check_permission, rate_limit
 
 role_blueprint = Blueprint('role', __name__, url_prefix='/api/v1/')
 
@@ -19,6 +18,7 @@ service = RoleService()
 
 @role_blueprint.route('/roles', methods=('GET',))
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def roles():
     """
@@ -45,6 +45,7 @@ def roles():
 
 @role_blueprint.route('/role', methods=('POST',))
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def role():
     """
@@ -90,6 +91,7 @@ def role():
     ),
 )
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def role_by_id(role_id):  # noqa: C901
     """
@@ -211,6 +213,7 @@ def role_by_id(role_id):  # noqa: C901
     ),
 )
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def role_permissions(role_id):
     """

@@ -1,15 +1,14 @@
 from http import HTTPStatus
 
+from core.config import settings
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-
-from core.config import settings
 from services.permission.payload_models import PermissionCreate, PermissionUpdate
 from services.permission.services.permission import PermissionService
 from utils.exceptions import AttemptDeleteProtectedObjectError, NotFoundError, UniqueConstraintError
 
 from .components.perm_schemas import Permission as PermissionSchem
-from .utils import check_permission
+from .utils import check_permission, rate_limit
 
 permissions_blueprint = Blueprint('permission', __name__, url_prefix='/api/v1/')
 
@@ -18,6 +17,7 @@ service = PermissionService()
 
 @permissions_blueprint.route('/permissions', methods=('GET',))
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def permissions():
     """
@@ -50,6 +50,7 @@ def permissions():
     ),
 )
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def permission_by_id(permission_id):  # noqa: C901
     """
@@ -165,6 +166,7 @@ def permission_by_id(permission_id):  # noqa: C901
 
 @permissions_blueprint.route('/permission', methods=('POST',))
 @jwt_required()
+@rate_limit()
 @check_permission(permission=settings.permission.Moderator)
 def permission():
     """
