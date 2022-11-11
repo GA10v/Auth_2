@@ -11,6 +11,7 @@ SELECT
    fw.rating as imdb_rating,
    fw.created,
    fw.modified,
+   fw.is_private,
    COALESCE(ARRAY_AGG(DISTINCT jsonb_build_object('id', p.id, 'name', p.full_name))
    FILTER (WHERE pfw.role = 'director' AND p.id is not null), '{}') AS director,
    ARRAY_AGG(DISTINCT jsonb_build_object('id', p.id, 'name', p.full_name))
