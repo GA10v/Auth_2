@@ -38,6 +38,15 @@ class ElasticSettings(BaseConfig):
         return [{'host': self.HOST, 'port': self.PORT}]
 
 
+class JWTSettings(BaseConfig):
+    SECRET_KEY: str = '245585dbb5cbe2f151742298d61d364880575bff0bdcbf4ae383f0180e7e47dd'
+    JWT_TOKEN_LOCATION: list = ['headers']
+    ALGORITHM: str = 'HS256'
+
+    class Config:
+        env_prefix = 'JWT_'
+
+
 class ProjectSettings(BaseConfig):
 
     SECRET: str = '245585dbb5cbe2f151742298d61d364880575bff0bdcbf4ae383f0180e7e47dd'
@@ -46,6 +55,7 @@ class ProjectSettings(BaseConfig):
     FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5
     redis: RedisSettings = RedisSettings()
     elastic: ElasticSettings = ElasticSettings()
+    jwt: JWTSettings = JWTSettings()
 
 
 settings = ProjectSettings()

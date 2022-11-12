@@ -1,7 +1,11 @@
 import dataclasses
+import datetime
 from enum import Enum
 
+import jwt
 from fastapi import Query
+
+from core.config import settings
 
 
 class SortEnum(str, Enum):
@@ -21,3 +25,16 @@ class PaginatedParams:
     ):
         self.num = num
         self.size = size
+
+
+def get_jwt(token: str) -> dict | None:
+    _token = jwt.decode(
+        jwt=token,
+        key=settings.jwt.SECRET_KEY,
+        algorithms=[settings.jwt.ALGORITHM],
+    )
+    return _token if _token['exp'] >= datetime.now() else None
+
+
+def get_permisions() -> list:
+    ...
