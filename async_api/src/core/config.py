@@ -1,3 +1,4 @@
+from enum import Enum
 from logging import config as logging_config
 from pathlib import Path
 
@@ -47,6 +48,13 @@ class JWTSettings(BaseConfig):
         env_prefix = 'JWT_'
 
 
+class PermissionSettings(Enum):
+    User = 0
+    Subscriber = 1
+    Vip_subscriber = 2
+    Moderator = 3
+
+
 class ProjectSettings(BaseConfig):
 
     SECRET: str = '245585dbb5cbe2f151742298d61d364880575bff0bdcbf4ae383f0180e7e47dd'
@@ -56,6 +64,7 @@ class ProjectSettings(BaseConfig):
     redis: RedisSettings = RedisSettings()
     elastic: ElasticSettings = ElasticSettings()
     jwt: JWTSettings = JWTSettings()
+    permission = PermissionSettings
 
 
 settings = ProjectSettings()

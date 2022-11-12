@@ -3,9 +3,13 @@ import datetime
 from enum import Enum
 
 import jwt
-from fastapi import Query
+from fastapi import HTTPException, Query, Request
+from fastapi.security import HTTPBearer
 
 from core.config import settings
+from core.logger import logger as _logger
+
+logger = _logger(__name__)
 
 
 class SortEnum(str, Enum):
@@ -27,14 +31,31 @@ class PaginatedParams:
         self.size = size
 
 
-def get_jwt(token: str) -> dict | None:
+def get_decoded_jwt(encoded_token: str) -> dict | None:
+    """
+    Декодирование Access token'а.
+    :param encoded_token: JWT token
+    :return: dict
+    """
     _token = jwt.decode(
-        jwt=token,
+        jwt=encoded_token,
         key=settings.jwt.SECRET_KEY,
         algorithms=[settings.jwt.ALGORITHM],
     )
     return _token if _token['exp'] >= datetime.now() else None
 
 
-def get_permisions() -> list:
-    ...
+def get_permisions(request: Request) -> list[str]:
+    """
+    Получение списка permision пользователя.
+    :param request: запрос
+    :return: permisions: list[str]
+    """
+    try:
+        bearer = HTTPBearer()
+        credentials = bearer(request)
+        permisions = get_decoded_jwt(credentials.credentials).get('permissions')
+        return permisions if permisions else []
+    except HTTPException as ex:
+        logger.info('Ошибка при получении списка permision пользователя: \n %s', str(ex))
+        return []
