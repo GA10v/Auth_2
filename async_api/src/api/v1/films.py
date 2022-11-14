@@ -62,7 +62,7 @@ async def search_film(
 
 
 @router.get(
-    path='/{film_id}',
+    path='/detail/{film_id}',
     response_model=DetailFilmResponse,
     summary='Поиск кинопроизведения по ID',
     description='Поиск кинопроизведения по ID',
