@@ -1,20 +1,31 @@
-# Проектная работа 7 спринта
+Ссылка на [проект](https://github.com/GA10v/Auth_sprint_2)
 
-Упростите регистрацию и аутентификацию пользователей в Auth-сервисе, добавив вход через социальные сервисы. Список сервисов выбирайте исходя из целевой аудитории онлайн-кинотеатра — подумайте, какими социальными сервисами они пользуются. Например, использовать [OAuth от Github](https://docs.github.com/en/free-pro-team@latest/developers/apps/authorizing-oauth-apps){target="_blank"} — не самая удачная идея. Ваши пользователи не разработчики и вряд ли имеют аккаунт на Github. А вот добавить Twitter, Facebook, VK, Google, Yandex или Mail будет хорошей идеей.
+## Работа с проектом
 
-Вам не нужно делать фронтенд в этой задаче и реализовывать собственный сервер OAuth. Нужно реализовать протокол со стороны потребителя.
+### Запуск приложения auth локально
+1. Установить зависимости командой
+    ```$ poetry install```
+2. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
+3. Загрузить приложение в переменную окружения командой
+    ```$ export FLASK_APP=main.py```
+4. Выполнить миграции командой
+    ```$ flask db upgrade```
+5. Создать администратора командой
+    ```$ flask create_sudo <username> <email> <password>```
+6. Заполнить БД данными командой
+    ```$ flask create_tables```
+7. Проект запускается командой
+    ```$ python3 auth/wsgi.py```
+8. Перейти к документации по url: ```http://localhost:5000/swagger/ ```
 
-Информация по OAuth у разных поставщиков данных: 
+### Запуск приложения в docker
+1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
+2. Запустить контейнер командой
+    ```$ docker-compose -f docker-compose.prod.yml up -d --build```
+3. Перейти к документации по url: ```http://localhost:80/swagger/ ```
+4. Перейти к Jaeger UI по url: ```http://localhost:16686/search ```
 
-- [Twitter](https://developer.twitter.com/en/docs/authentication/overview){target="_blank"},
-- [Facebook](https://developers.facebook.com/docs/facebook-login/){target="_blank"},
-- [VK](https://vk.com/dev/access_token){target="_blank"},
-- [Google](https://developers.google.com/identity/protocols/oauth2){target="_blank"},
-- [Yandex](https://yandex.ru/dev/oauth/?turbo=true){target="_blank"},
-- [Mail](https://api.mail.ru/docs/guides/oauth/){target="_blank"}.
-
-## Дополнительное задание
-
-Реализуйте возможность открепить аккаунт в соцсети от личного кабинета. 
-
-Решение залейте в репозиторий текущего спринта и отправьте на ревью.
+### Запуск тестов
+1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
+2. Запустить контейнер командой
+    ```$ docker-compose -f docker-compose.test.yml up -d --build```
