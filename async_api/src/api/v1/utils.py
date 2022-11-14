@@ -3,6 +3,10 @@ from enum import Enum
 
 from fastapi import Query
 
+from core.logger import logger as _logger
+
+logger = _logger(__name__)
+
 
 class SortEnum(str, Enum):
     desc_rating = '-imdb_rating'

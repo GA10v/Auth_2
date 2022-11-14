@@ -108,7 +108,7 @@
           }
         }
       },
-      "only_sub": {
+      "is_private": {
         "type": "boolean"
       },
       "writers": {

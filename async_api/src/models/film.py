@@ -32,6 +32,7 @@ class ESFilm(DefaultModel):
     actors: Optional[list[ESFilmPerson]]
     writers: Optional[list[ESFilmPerson]]
     genre: Optional[list[ESFilmGenre]]
+    is_private: Optional[bool]
 
 
 class FilmResponse(DefaultModel):
@@ -50,3 +51,4 @@ class DetailFilmResponse(FilmResponse):
     actors: Optional[list[PersonResponse]] = []
     writers: Optional[list[PersonResponse]] = []
     directors: Optional[list[PersonResponse]] = []
+    is_private: Optional[bool] = True
