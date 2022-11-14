@@ -8,6 +8,7 @@ from api.v1 import films, genres, persons, services
 from core.config import settings
 from core.logger import LOGGING
 from db import cache, elastic, redis
+from middleware.auth import AuthMiddleware
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -18,6 +19,7 @@ app = FastAPI(
 
 cache_middleware = cache.CacheMiddleWare(redis.redis)
 app.add_middleware(BaseHTTPMiddleware, dispatch=cache_middleware)
+app.add_middleware(AuthMiddleware, auth_url=settings.auth.url)
 
 
 @app.on_event('startup')
