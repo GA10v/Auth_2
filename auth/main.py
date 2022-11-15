@@ -120,7 +120,8 @@ def create_app():
     init_security(app)
     init_spec(app)
     init_cli(app)
-    configure_tracer(app)
+    if settings.enable_tracer:
+        configure_tracer(app)
 
     return app
 

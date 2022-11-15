@@ -153,6 +153,7 @@ class ProjectSettings(BaseConfig):
     oauth: OAuthSettings = OAuthSettings()
     jaeger: JaegerSettings = JaegerSettings()
     rate_limit: RateLimitSettings = RateLimitSettings()
+    enable_tracer: bool = False
 
 
 settings = ProjectSettings()
