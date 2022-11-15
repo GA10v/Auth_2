@@ -3,10 +3,11 @@ import datetime
 from functools import wraps
 from http import HTTPStatus
 
-from core import settings
-from db.redis import redis
 from flask import jsonify
 from flask_jwt_extended import get_jwt, get_jwt_identity, verify_jwt_in_request
+
+from core import settings
+from db.redis import redis
 
 
 @dataclasses.dataclass
@@ -35,8 +36,8 @@ def check_permission(permission: settings.permission):
 
             if is_owner or is_super or (permission.value in permissions):
                 return func(*args, **kwargs)
-            else:
-                return jsonify(msg='Permission denied'), HTTPStatus.FORBIDDEN
+
+            return jsonify(msg='Permission denied'), HTTPStatus.FORBIDDEN
 
         return inner
 
@@ -62,8 +63,8 @@ def rate_limit(limit: int = settings.rate_limit.PER_MINUTE):
 
             if request_number >= limit:
                 return jsonify(msg='Too many requests'), HTTPStatus.TOO_MANY_REQUESTS
-            else:
-                return func(*args, **kwargs)
+
+            return func(*args, **kwargs)
 
         return inner
 
