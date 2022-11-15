@@ -51,7 +51,7 @@ services:
       depends_on:
         - auth
       ports:
-        - "10080:80"
+        - "80:80"
         - "10443:443"
       restart: always
 

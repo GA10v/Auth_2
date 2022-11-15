@@ -42,6 +42,5 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if 'http://fastapi:8000/api/v1/films/detail/' in str(request.url):
             if settings.permission.Subscriber in claims.get('permissions'):
                 return await call_next(request)
-            else:
-                return Response('Permission denied', HTTPStatus.FORBIDDEN)
+            return Response('Permission denied', HTTPStatus.FORBIDDEN)
         return await call_next(request)

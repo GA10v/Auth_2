@@ -1,6 +1,7 @@
 import json
 import secrets
 from string import ascii_letters, digits
+from typing import TypedDict
 
 import services.user.layer_models as layer_models
 import services.user.payload_models as payload_models
@@ -18,6 +19,15 @@ db_repo = repo.get_user_db_repo()
 tms_repo = repo.get_user_tms_repo()
 
 
+class CredentialsConf(TypedDict):
+    name: str
+    client_id: str
+    client_secret: str
+    authorize_url: str
+    access_token_url: str
+    base_url: str
+
+
 class OAuthBase:
     providers = None
 
@@ -28,13 +38,10 @@ class OAuthBase:
         tm_storage_repository: repo.UserTmStorageRepositoryProtocol = tms_repo,
     ):
         self.provider_name = provider_name
-        credentials = settings.oauth.credentials.get(provider_name)
-        self.consumer_name = credentials.get('name')
-        self.consumer_id = credentials.get('id')
-        self.consumer_secret = credentials.get('secret')
-        self.authorize_url = credentials.get('authorize_url')
-        self.access_token_url = credentials.get('access_token_url')
-        self.base_url = credentials.get('base_url')
+        _credentials: CredentialsConf = settings.oauth.credentials.get(provider_name)
+        self.credentials: CredentialsConf = _credentials
+        self.consumer_id = _credentials.get('client_id')
+        self.consumer_secret = _credentials.get('client_secret')
         self.db_repo = db_repository
         self.tms_repo = tm_storage_repository
 
@@ -167,14 +174,7 @@ class OAuthLogin(OAuthBase):
 class YandexRegister(OAuthRegister):
     def __init__(self) -> None:
         super(YandexRegister, self).__init__('yandex')
-        self.service = OAuth2Service(
-            name=self.consumer_name,
-            client_id=self.consumer_id,
-            client_secret=self.consumer_secret,
-            authorize_url=self.authorize_url,
-            access_token_url=self.access_token_url,
-            base_url=self.base_url,
-        )
+        self.service = OAuth2Service(**self.credentials)
 
     def authorize(self):
         return redirect(
@@ -213,14 +213,7 @@ class YandexRegister(OAuthRegister):
 class YandexLogin(OAuthLogin):
     def __init__(self) -> None:
         super(YandexLogin, self).__init__('yandex')
-        self.service = OAuth2Service(
-            name=self.consumer_name,
-            client_id=self.consumer_id,
-            client_secret=self.consumer_secret,
-            authorize_url=self.authorize_url,
-            access_token_url=self.access_token_url,
-            base_url=self.base_url,
-        )
+        self.service = OAuth2Service(**self.credentials)
 
     def authorize(self):
         return redirect(
@@ -259,14 +252,7 @@ class YandexLogin(OAuthLogin):
 class GoogleRegister(OAuthRegister):
     def __init__(self) -> None:
         super(GoogleRegister, self).__init__('google')
-        self.service = OAuth2Service(
-            name=self.consumer_name,
-            client_id=self.consumer_id,
-            client_secret=self.consumer_secret,
-            authorize_url=self.authorize_url,
-            access_token_url=self.access_token_url,
-            base_url=self.base_url,
-        )
+        self.service = OAuth2Service(**self.credentials)
 
     def authorize(self):
         return redirect(
@@ -306,14 +292,7 @@ class GoogleRegister(OAuthRegister):
 class GoogleLogin(OAuthLogin):
     def __init__(self) -> None:
         super(GoogleLogin, self).__init__('google')
-        self.service = OAuth2Service(
-            name=self.consumer_name,
-            client_id=self.consumer_id,
-            client_secret=self.consumer_secret,
-            authorize_url=self.authorize_url,
-            access_token_url=self.access_token_url,
-            base_url=self.base_url,
-        )
+        self.service = OAuth2Service(**self.credentials)
 
     def authorize(self):
         return redirect(

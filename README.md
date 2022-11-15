@@ -22,7 +22,7 @@
 1. Создать файл конфигурации ```.env``` в корне проекта и заполнить его согласно ```example.env ```
 2. Запустить контейнер командой
     ```$ docker-compose -f docker-compose.prod.yml up -d --build```
-3. Перейти к документации по url: ```http://localhost:10443/swagger/ ```
+3. Перейти к документации по url: ```http://localhost:80/swagger/ ```
 4. Перейти к Jaeger UI по url: ```http://localhost:16686/search ```
 
 ### Запуск тестов
