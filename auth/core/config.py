@@ -122,8 +122,8 @@ class OAuthSettings(BaseConfig):
     credentials: dict = {
         'yandex': {
             'name': 'yandex',
-            'id': '93bfa237f2c9460eb1f6b7b027fd335c',
-            'secret': '767fb1eb31c9438796e112bc3ab16455',
+            'client_id': '93bfa237f2c9460eb1f6b7b027fd335c',
+            'client_secret': '767fb1eb31c9438796e112bc3ab16455',
             'authorize_url': 'https://oauth.yandex.ru/authorize',
             # https://yandex.ru/dev/id/doc/dg/oauth/reference/web-client.html
             'access_token_url': 'https://oauth.yandex.ru/token',
@@ -133,8 +133,8 @@ class OAuthSettings(BaseConfig):
         },
         'google': {
             'name': 'google',
-            'id': '158645861187-is4iskf819ia1bbjflu9jd144vfi2nt5.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': '158645861187-is4iskf819ia1bbjflu9jd144vfi2nt5.apps.googleusercontent.com',
+            'client_secret': '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',
             'authorize_url': 'https://accounts.google.com/o/oauth2/auth',
             'access_token_url': 'https://accounts.google.com/o/oauth2/token',
             'base_url': 'https://www.googleapis.com/oauth2/v1/userinfo',
